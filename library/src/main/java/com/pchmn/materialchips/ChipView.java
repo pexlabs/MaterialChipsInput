@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -47,6 +48,9 @@ public class ChipView extends RelativeLayout {
     private ColorStateList mBackgroundColor;
     private ColorStateList mBorderColor;
     private int mBorderSize;
+    // Padding between the label if the avatar if needed, default is 0
+    private int mLabelAvatarPadding;
+    private int mLabelTextSize;
     // letter tile provider
     private LetterTileProvider mLetterTileProvider;
     // chip
@@ -92,22 +96,29 @@ public class ChipView extends RelativeLayout {
                 // label
                 mLabel = a.getString(R.styleable.ChipView_label);
                 mLabelColor = a.getColorStateList(R.styleable.ChipView_labelColor);
+                mLabelAvatarPadding = a.getDimensionPixelSize(
+                        R.styleable.ChipView_labelAvatarPadding, 0);
+                mLabelTextSize = a.getDimensionPixelSize(R.styleable.ChipView_labelTextSize,
+                        ViewUtil.dpToPx(16));
                 // avatar icon
                 mHasAvatarIcon = a.getBoolean(R.styleable.ChipView_hasAvatarIcon, false);
                 int avatarIconId = a.getResourceId(R.styleable.ChipView_avatarIcon, NONE);
-                if(avatarIconId != NONE) mAvatarIconDrawable = ContextCompat.getDrawable(mContext, avatarIconId);
+                if(avatarIconId != NONE) mAvatarIconDrawable = ContextCompat.getDrawable(mContext,
+                        avatarIconId);
                 if(mAvatarIconDrawable != null) mHasAvatarIcon = true;
                 // delete icon
                 mDeletable = a.getBoolean(R.styleable.ChipView_deletable, false);
                 mDeleteIconColor = a.getColorStateList(R.styleable.ChipView_deleteIconColor);
                 int deleteIconId = a.getResourceId(R.styleable.ChipView_deleteIcon, NONE);
-                if(deleteIconId != NONE) mDeleteIcon = ContextCompat.getDrawable(mContext, deleteIconId);
+                if(deleteIconId != NONE) mDeleteIcon = ContextCompat.getDrawable(mContext,
+                        deleteIconId);
                 // background color
                 mBackgroundColor = a.getColorStateList(R.styleable.ChipView_backgroundColor);
                 // border color
                 mBorderColor = a.getColorStateList(R.styleable.ChipView_borderColor);
                 // border size
-                mBorderSize = a.getDimensionPixelSize(R.styleable.ChipView_borderSize, 10);
+                mBorderSize = a.getDimensionPixelSize(R.styleable.ChipView_borderSize,
+                        ViewUtil.dpToPx(2));
             }
             finally {
                 a.recycle();
@@ -122,16 +133,17 @@ public class ChipView extends RelativeLayout {
      * Inflate the view
      */
     private void inflateWithAttributes() {
-        // label
-        setLabel(mLabel);
-        if(mLabelColor != null)
-            setLabelColor(mLabelColor);
-
         // avatar
         setHasAvatarIcon(mHasAvatarIcon);
 
         // delete button
         setDeletable(mDeletable);
+
+        // label
+        setLabel(mLabel, mLabelAvatarPadding, mLabelTextSize);
+        if(mLabelColor != null)
+            setLabelColor(mLabelColor);
+
 
         // background color
         if(mBackgroundColor != null)
@@ -168,9 +180,24 @@ public class ChipView extends RelativeLayout {
      *
      * @param label the label to set
      */
-    public void setLabel(String label) {
+    public void setLabel(String label, int mLabelAvatarPadding, int labelTextSizePixels) {
         mLabel = label;
         mLabelTextView.setText(label);
+        if (labelTextSizePixels > 0) {
+            mLabelTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, labelTextSizePixels);
+        }
+
+        // If the avatar image is there, let's honor that padding that was specified
+        // (default is 0), otherwise, use our default padding everywhere.
+        int startPadding = ViewUtil.dpToPx(12);
+        int endPadding = ViewUtil.dpToPx(12);
+        if (mAvatarIconImageView.getVisibility() == VISIBLE) {
+            startPadding = mLabelAvatarPadding;
+        }
+        if (mDeleteButton.getVisibility() == VISIBLE) {
+            endPadding = 0;
+        }
+        mLabelTextView.setPaddingRelative(startPadding, 0, endPadding, 0);
     }
 
     /**
@@ -194,32 +221,19 @@ public class ChipView extends RelativeLayout {
     }
 
     /**
-     * Show or hide avatar icon
+     * Show or hide avatar icon.
+     * alee - we don't want any padding between the avatar image and the text
      *
      * @param hasAvatarIcon true to show, false to hide
      */
     public void setHasAvatarIcon(boolean hasAvatarIcon) {
         mHasAvatarIcon = hasAvatarIcon;
-
         if(!mHasAvatarIcon) {
             // hide icon
             mAvatarIconImageView.setVisibility(GONE);
-            // adjust padding
-            if(mDeleteButton.getVisibility() == VISIBLE)
-                mLabelTextView.setPadding(ViewUtil.dpToPx(12), 0, 0, 0);
-            else
-                mLabelTextView.setPadding(ViewUtil.dpToPx(12), 0, ViewUtil.dpToPx(12), 0);
-
-        }
-        else {
+        } else {
             // show icon
             mAvatarIconImageView.setVisibility(VISIBLE);
-            // adjust padding
-            if(mDeleteButton.getVisibility() == VISIBLE)
-                mLabelTextView.setPadding(ViewUtil.dpToPx(8), 0, 0, 0);
-            else
-                mLabelTextView.setPadding(ViewUtil.dpToPx(8), 0, ViewUtil.dpToPx(12), 0);
-
             // set icon
             if(mAvatarIconUri != null)
                 mAvatarIconImageView.setImageURI(mAvatarIconUri);
@@ -253,7 +267,8 @@ public class ChipView extends RelativeLayout {
     }
 
     /**
-     * Show or hide delte button
+     * Show or hide delete button
+     * alee - we don't want any padding between the avatar image and the text
      *
      * @param deletable true to show, false to hide
      */
@@ -262,26 +277,15 @@ public class ChipView extends RelativeLayout {
         if(!mDeletable) {
             // hide delete icon
             mDeleteButton.setVisibility(GONE);
-            // adjust padding
-            if(mAvatarIconImageView.getVisibility() == VISIBLE)
-                mLabelTextView.setPadding(ViewUtil.dpToPx(8), 0, ViewUtil.dpToPx(12), 0);
-            else
-                mLabelTextView.setPadding(ViewUtil.dpToPx(12), 0, ViewUtil.dpToPx(12), 0);
-        }
-        else {
+        } else {
             // show icon
             mDeleteButton.setVisibility(VISIBLE);
-            // adjust padding
-            if(mAvatarIconImageView.getVisibility() == VISIBLE)
-                mLabelTextView.setPadding(ViewUtil.dpToPx(8), 0, 0, 0);
-            else
-                mLabelTextView.setPadding(ViewUtil.dpToPx(12), 0, 0, 0);
-
             // set icon
             if(mDeleteIcon != null)
                 mDeleteButton.setImageDrawable(mDeleteIcon);
             if(mDeleteIconColor != null)
-                mDeleteButton.getDrawable().mutate().setColorFilter(mDeleteIconColor.getDefaultColor(), PorterDuff.Mode.SRC_ATOP);
+                mDeleteButton.getDrawable().mutate().setColorFilter(
+                        mDeleteIconColor.getDefaultColor(), PorterDuff.Mode.SRC_ATOP);
         }
     }
 
@@ -336,7 +340,8 @@ public class ChipView extends RelativeLayout {
     public void setChipBackgroundColor(@ColorInt int color) {
         mBackgroundColor = ColorStateList.valueOf(color);
         RippleDrawable newDrawable = (RippleDrawable) mContentLayout.getBackground().mutate();
-        GradientDrawable drawable = (GradientDrawable) newDrawable.findDrawableByLayerId(R.id.ripper_inner_item);
+        GradientDrawable drawable = (GradientDrawable) newDrawable.findDrawableByLayerId(
+                R.id.ripper_inner_item);
         drawable.setColor(mBackgroundColor);
         mContentLayout.setBackground(newDrawable);
     }
@@ -361,7 +366,8 @@ public class ChipView extends RelativeLayout {
     public void setChipBorderColor(int sizePixels, @ColorInt int color) {
         mBorderColor = ColorStateList.valueOf(color);
         RippleDrawable newDrawable = (RippleDrawable) mContentLayout.getBackground().mutate();
-        GradientDrawable drawable = (GradientDrawable) newDrawable.findDrawableByLayerId(R.id.ripper_inner_item);
+        GradientDrawable drawable = (GradientDrawable) newDrawable.findDrawableByLayerId(
+                R.id.ripper_inner_item);
         drawable.setStroke(sizePixels, mBorderColor);
     }
 

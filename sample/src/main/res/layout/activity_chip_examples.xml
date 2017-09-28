@@ -63,6 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
+                app:labelAvatarPadding="8dp"
                 app:label="Chip 4"
                 app:hasAvatarIcon="true" />
 

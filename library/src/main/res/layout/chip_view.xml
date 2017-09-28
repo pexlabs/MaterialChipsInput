@@ -27,10 +27,7 @@
             android:id="@+id/label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:paddingLeft="8dp"
-            android:textSize="14sp"
-            android:text="Paulcito"/>
+            android:layout_gravity="center_vertical"/>
 
         <!-- remove button -->
         <ImageButton

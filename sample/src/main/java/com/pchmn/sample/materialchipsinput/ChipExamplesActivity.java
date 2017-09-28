@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.pchmn.materialchips.ChipView;
+import com.pchmn.materialchips.util.ViewUtil;
 
 public class ChipExamplesActivity extends AppCompatActivity {
 
@@ -90,13 +91,13 @@ public class ChipExamplesActivity extends AppCompatActivity {
         // programmatically
         Uri uri = null;
         ChipView chipView1 = new ChipView(this);
-        chipView1.setLabel("Pritesh");
+        chipView1.setLabel("Pritesh", 0, ViewUtil.dpToPx(5));
         chipView1.setPadding(2,2,2,2);
         chipView1.setHasAvatarIcon(true);
         chipView1.setChipBorderColor(7, Color.BLUE);
 
         ChipView chipView2 = new ChipView(this);
-        chipView2.setLabel("Test 1");
+        chipView2.setLabel("Test 1", 20, ViewUtil.dpToPx(20));
         chipView2.setChipBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
         chipView2.setLabelColor(ContextCompat.getColor(this, R.color.colorPrimary));
         chipView2.setAvatarIcon(uri);
