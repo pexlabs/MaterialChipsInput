@@ -6,24 +6,22 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.RippleDrawable;
 import android.net.Uri;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.pchmn.materialchips.model.Chip;
 import com.pchmn.materialchips.model.ChipInterface;
 import com.pchmn.materialchips.util.LetterTileProvider;
 import com.pchmn.materialchips.util.ViewUtil;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChipView extends RelativeLayout {
@@ -32,10 +30,10 @@ public class ChipView extends RelativeLayout {
     // context
     private Context mContext;
     // xml elements
-    @BindView(R2.id.content) LinearLayout mContentLayout;
-    @BindView(R2.id.icon) CircleImageView mAvatarIconImageView;
-    @BindView(R2.id.label) TextView mLabelTextView;
-    @BindView(R2.id.delete_button) ImageButton mDeleteButton;
+    private LinearLayout mContentLayout;
+    private CircleImageView mAvatarIconImageView;
+    private TextView mLabelTextView;
+    private ImageButton mDeleteButton;
     // attributes
     private static final int NONE = -1;
     private String mLabel;
@@ -47,6 +45,8 @@ public class ChipView extends RelativeLayout {
     private Drawable mDeleteIcon;
     private ColorStateList mDeleteIconColor;
     private ColorStateList mBackgroundColor;
+    private ColorStateList mBorderColor;
+    private int mBorderSize;
     // letter tile provider
     private LetterTileProvider mLetterTileProvider;
     // chip
@@ -72,8 +72,12 @@ public class ChipView extends RelativeLayout {
     private void init(AttributeSet attrs) {
         // inflate layout
         View rootView = inflate(getContext(), R.layout.chip_view, this);
-        // butter knife
-        ButterKnife.bind(this, rootView);
+
+        mContentLayout = (LinearLayout) rootView.findViewById(R.id.content);
+        mAvatarIconImageView = (CircleImageView) rootView.findViewById(R.id.icon);
+        mLabelTextView = (TextView) rootView.findViewById(R.id.label);
+        mDeleteButton = (ImageButton) rootView.findViewById(R.id.delete_button);
+
         // letter tile provider
         mLetterTileProvider = new LetterTileProvider(mContext);
 
@@ -100,6 +104,10 @@ public class ChipView extends RelativeLayout {
                 if(deleteIconId != NONE) mDeleteIcon = ContextCompat.getDrawable(mContext, deleteIconId);
                 // background color
                 mBackgroundColor = a.getColorStateList(R.styleable.ChipView_backgroundColor);
+                // border color
+                mBorderColor = a.getColorStateList(R.styleable.ChipView_borderColor);
+                // border size
+                mBorderSize = a.getDimensionPixelSize(R.styleable.ChipView_borderSize, 10);
             }
             finally {
                 a.recycle();
@@ -128,6 +136,10 @@ public class ChipView extends RelativeLayout {
         // background color
         if(mBackgroundColor != null)
             setChipBackgroundColor(mBackgroundColor);
+
+        // border color
+        if(mBorderColor != null)
+            setChipBorderColor(mBorderSize, mBorderColor);
     }
 
     public void inflate(ChipInterface chip) {
@@ -323,7 +335,34 @@ public class ChipView extends RelativeLayout {
      */
     public void setChipBackgroundColor(@ColorInt int color) {
         mBackgroundColor = ColorStateList.valueOf(color);
-        mContentLayout.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
+        RippleDrawable newDrawable = (RippleDrawable) mContentLayout.getBackground().mutate();
+        GradientDrawable drawable = (GradientDrawable) newDrawable.findDrawableByLayerId(R.id.ripper_inner_item);
+        drawable.setColor(mBackgroundColor);
+        mContentLayout.setBackground(newDrawable);
+    }
+
+    /**
+     * Set border color
+     *
+     * @param sizePixels the border size
+     * @param color the color to set
+     */
+    public void setChipBorderColor(int sizePixels, ColorStateList color) {
+        mBackgroundColor = color;
+        setChipBorderColor(sizePixels, color.getDefaultColor());
+    }
+
+    /**
+     * Set border color and size
+     *
+     * @param sizePixels the border size
+     * @param color the color to set
+     */
+    public void setChipBorderColor(int sizePixels, @ColorInt int color) {
+        mBorderColor = ColorStateList.valueOf(color);
+        RippleDrawable newDrawable = (RippleDrawable) mContentLayout.getBackground().mutate();
+        GradientDrawable drawable = (GradientDrawable) newDrawable.findDrawableByLayerId(R.id.ripper_inner_item);
+        drawable.setStroke(sizePixels, mBorderColor);
     }
 
     /**

@@ -26,6 +26,8 @@
                 android:layout_marginRight="16dp"
                 app:label="Chip 1"
                 app:hasAvatarIcon="false"
+                app:backgroundColor="@android:color/white"
+                app:borderColor="#894BA6"
                 app:deletable="false"/>
 
             <com.pchmn.materialchips.ChipView
@@ -35,6 +37,8 @@
                 android:layout_marginRight="16dp"
                 app:label="Chip 2"
                 app:hasAvatarIcon="false"
+                app:borderColor="#894BA6"
+                app:borderSize="2dp"
                 app:deletable="true"/>
 
             <com.pchmn.materialchips.ChipView
@@ -93,7 +97,7 @@
                 app:label="Chip 6"
                 app:labelColor="@android:color/white"
                 app:avatarIcon="@drawable/avatar"
-                app:backgroundColor="@android:color/holo_blue_light"
+                app:backgroundColor="@android:color/holo_green_dark"
                 app:deletable="true"
                 app:deleteIconColor="@android:color/white" />
 

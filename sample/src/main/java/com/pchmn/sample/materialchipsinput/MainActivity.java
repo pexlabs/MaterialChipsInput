@@ -7,23 +7,23 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.toString();
-    @BindView(R.id.contacts_button) Button mContactListButton;
-    @BindView(R.id.custom_chips_button) Button mCustomChipsButton;
+    private Button mContactListButton;
+    private Button mCustomChipsButton;
+    private Button mDialogFragment;
     private int mStackLevel = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // butter knife
-        ButterKnife.bind(this);
+
+        mContactListButton = (Button) findViewById(R.id.contacts_button);
+        mCustomChipsButton = (Button) findViewById(R.id.custom_chips_button);
+        mDialogFragment = (Button) findViewById(R.id.dialog_fragment);
 
         mContactListButton.setOnClickListener(view -> {
             startActivity(new Intent(MainActivity.this, ContactListActivity.class));
@@ -32,9 +32,13 @@ public class MainActivity extends AppCompatActivity {
         mCustomChipsButton.setOnClickListener(view -> {
             startActivity(new Intent(MainActivity.this, ChipExamplesActivity.class));
         });
+
+        mDialogFragment.setOnClickListener(view -> {
+            showDialog();
+        });
+
     }
 
-    @OnClick(R.id.dialog_fragment)
     public void showDialog() {
         mStackLevel++;
 

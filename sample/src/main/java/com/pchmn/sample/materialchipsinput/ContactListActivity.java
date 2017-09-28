@@ -19,23 +19,23 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ContactListActivity extends AppCompatActivity {
 
     private static final String TAG = ContactListActivity.class.toString();
-    @BindView(R.id.chips_input) ChipsInput mChipsInput;
-    @BindView(R.id.validate) Button mValidateButton;
-    @BindView(R.id.chip_list) TextView mChipListText;
+    private ChipsInput mChipsInput;
+    private Button mValidateButton;
+    private TextView mChipListText;
     private List<ContactChip> mContactList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_list);
-        // butter knife
-        ButterKnife.bind(this);
+
+        mChipsInput = (ChipsInput) findViewById(R.id.chips_input);
+        mValidateButton = (Button) findViewById(R.id.validate);
+        mChipListText = (TextView) findViewById(R.id.chip_list);
+
         mContactList = new ArrayList<>();
 
         // get contact list
