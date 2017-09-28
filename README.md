@@ -11,6 +11,8 @@ Implementation of Material Design [Chips](https://material.io/guidelines/compone
 
 ## Setup
 
+** NOTE THIS A FORK OF THE ORIGINAL PROJECT FOR ASTRO **
+
 To use this library your `minSdkVersion` must be >= 15.
 
 In your project level build.gradle :
@@ -26,7 +28,7 @@ allprojects {
 In your app level build.gradle :
 ```java
 dependencies {
-    compile 'com.github.pchmn:MaterialChipsInput:1.0.8'
+    compile 'com.github.pexlabs:MaterialChipsInput:2.0.3'
 }      
 ```
 <br><br>
