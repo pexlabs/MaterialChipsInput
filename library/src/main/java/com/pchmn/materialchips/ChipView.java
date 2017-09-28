@@ -221,6 +221,17 @@ public class ChipView extends RelativeLayout {
     }
 
     /**
+     * Tint the existing avatar image
+     * @param color
+     * @param mode
+     */
+    public void tintAvatarIcon(@ColorInt int color, PorterDuff.Mode mode) {
+        if (mAvatarIconImageView != null) {
+            mAvatarIconImageView.setColorFilter(color, mode);
+        }
+    }
+
+    /**
      * Show or hide avatar icon.
      * alee - we don't want any padding between the avatar image and the text
      *

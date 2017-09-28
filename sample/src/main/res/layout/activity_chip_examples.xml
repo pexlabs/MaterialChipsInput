@@ -65,6 +65,7 @@
                 android:layout_marginRight="16dp"
                 app:labelAvatarPadding="8dp"
                 app:label="Chip 4"
+                app:avatarIcon="@drawable/search_attach_image"
                 app:hasAvatarIcon="true" />
 
             <com.pchmn.materialchips.ChipView

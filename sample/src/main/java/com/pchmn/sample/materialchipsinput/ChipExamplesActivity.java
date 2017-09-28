@@ -1,6 +1,7 @@
 package com.pchmn.sample.materialchipsinput;
 
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +41,7 @@ public class ChipExamplesActivity extends AppCompatActivity {
         // chip 1
         mChip1.setOnChipClicked(view -> {
             Toast.makeText(ChipExamplesActivity.this, mChip1.getLabel() + ": clicked", Toast.LENGTH_SHORT).show();
+            mChip5.tintAvatarIcon(Color.RED, PorterDuff.Mode.SRC_IN);
         });
         mChip1.setOnDeleteClicked(view -> {
             Toast.makeText(ChipExamplesActivity.this, mChip1.getLabel() + ": delete clicked", Toast.LENGTH_SHORT).show();
@@ -69,6 +71,7 @@ public class ChipExamplesActivity extends AppCompatActivity {
         // chip 5
         mChip5.setOnChipClicked(view -> {
             Toast.makeText(ChipExamplesActivity.this, mChip5.getLabel() + ": clicked", Toast.LENGTH_SHORT).show();
+            mChip5.tintAvatarIcon(Color.GREEN, PorterDuff.Mode.SRC_IN);
         });
 
         // chip 6
