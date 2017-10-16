@@ -2,12 +2,13 @@ package com.pchmn.materialchips.adapter;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -17,19 +18,20 @@ import android.widget.RelativeLayout;
 
 import com.pchmn.materialchips.ChipView;
 import com.pchmn.materialchips.ChipsInput;
+import com.pchmn.materialchips.drag.ItemTouchHelperAdapter;
 import com.pchmn.materialchips.model.ChipInterface;
+import com.pchmn.materialchips.util.ViewUtil;
 import com.pchmn.materialchips.views.ChipsInputEditText;
 import com.pchmn.materialchips.views.DetailedChipView;
-import com.pchmn.materialchips.model.Chip;
-import com.pchmn.materialchips.util.ViewUtil;
 import com.pchmn.materialchips.views.FilterableListView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 
-public class ChipsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ChipsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements ItemTouchHelperAdapter {
 
     private static final String TAG = ChipsAdapter.class.toString();
     private static final int TYPE_EDIT_TEXT = 0;
@@ -40,6 +42,11 @@ public class ChipsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private String mHintLabel;
     private ChipsInputEditText mEditText;
     private RecyclerView mRecycler;
+    private OnStartDragListener mDragListener;
+
+    public interface OnStartDragListener {
+        void onStartDrag(RecyclerView.ViewHolder viewHolder);
+    }
 
     public ChipsAdapter(Context context, ChipsInput chipsInput, RecyclerView recycler) {
         mContext = context;
@@ -74,9 +81,8 @@ public class ChipsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType == TYPE_EDIT_TEXT)
             return new EditTextViewHolder(mEditText);
-        else
-            return new ItemViewHolder(mChipsInput.getChipView());
 
+        return new ItemViewHolder(mChipsInput.getChipView());
     }
 
     @Override
@@ -93,6 +99,18 @@ public class ChipsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         else if(getItemCount() > 1) {
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             itemViewHolder.chipView.inflate(getItem(position));
+            itemViewHolder.chipView.setTag(String.valueOf(position));
+            itemViewHolder.chipView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_MOVE) {
+                        // disable dragging for only 1 item
+                        if (mChipList.size() == 1) return false;
+                        mDragListener.onStartDrag(holder);
+                    }
+                    return false;
+                }
+            });
             // handle click
             handleClickOnEditText(itemViewHolder.chipView, position);
         }
@@ -118,6 +136,26 @@ public class ChipsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public long getItemId(int position) {
         return mChipList.get(position).hashCode();
+    }
+
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        Collections.swap(mChipList, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+        return true;
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        if(position < 0) return;
+        if(position == mChipList.size()) return;
+        mChipList.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void setOnDragListener(final OnStartDragListener listener) {
+        mDragListener = listener;
     }
 
     private void initEditText() {

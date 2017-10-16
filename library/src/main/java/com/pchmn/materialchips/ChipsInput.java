@@ -9,11 +9,13 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.pchmn.materialchips.adapter.ChipsAdapter;
+import com.pchmn.materialchips.drag.ItemTouchHelperCallback;
 import com.pchmn.materialchips.model.Chip;
 import com.pchmn.materialchips.model.ChipInterface;
 import com.pchmn.materialchips.util.ActivityUtil;
@@ -62,11 +64,10 @@ public class ChipsInput extends ScrollViewMaxHeight {
     private FilterableListView mFilterableListView;
     // chip validator
     private ChipValidator mChipValidator;
+    private ItemTouchHelper mItemTouchHelper;
 
     public ChipsInput(Context context) {
-        super(context);
-        mContext = context;
-        init(null);
+        this(context, null);
     }
 
     public ChipsInput(Context context, AttributeSet attrs) {
@@ -126,9 +127,18 @@ public class ChipsInput extends ScrollViewMaxHeight {
                 a.recycle();
             }
         }
-
         // adapter
         mChipsAdapter = new ChipsAdapter(mContext, this, mRecyclerView);
+        mChipsAdapter.setOnDragListener(new ChipsAdapter.OnStartDragListener() {
+            @Override
+            public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
+                mItemTouchHelper.startDrag(viewHolder);
+            }
+        });
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(mChipsAdapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(mRecyclerView);
+
         ChipsLayoutManager chipsLayoutManager = ChipsLayoutManager.newBuilder(mContext)
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .build();
