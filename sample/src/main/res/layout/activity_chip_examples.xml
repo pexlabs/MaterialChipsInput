@@ -96,9 +96,72 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                app:labelAvatarPadding="8dp"
                 app:label="Chip 6"
                 app:labelColor="@android:color/white"
                 app:avatarIcon="@drawable/avatar"
+                app:backgroundColor="@android:color/holo_green_dark"
+                app:deletable="true"
+                app:deleteIconColor="@android:color/white" />
+
+        </LinearLayout>
+
+        <!-- third line -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.pchmn.materialchips.ChipView
+                android:id="@+id/chip8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                app:labelAvatarPadding="8dp"
+                app:avatarAtEnd="true"
+                app:label="Chip 8"
+                app:avatarIcon="@drawable/search_attach_image"
+                app:hasAvatarIcon="true" />
+
+            <com.pchmn.materialchips.ChipView
+                android:visibility="gone"
+                android:id="@+id/chip9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                app:avatarAtEnd="true"
+                app:label="Chip 9"
+                app:deleteIcon="@drawable/ic_check_circle_black_24dp"
+                app:deleteIconColor="#A6A6A6"/>
+
+            <com.pchmn.materialchips.ChipView
+                android:id="@+id/chip10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                app:avatarAtEnd="true"
+                app:label="Chip 10"
+                app:labelColor="@color/colorPrimary"
+                app:backgroundColor="@android:color/holo_blue_light"
+                app:deletable="true"
+                app:deleteIconColor="@color/colorPrimary"/>
+
+            <com.pchmn.materialchips.ChipView
+                android:id="@+id/chip11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:label="Chip 11"
+                app:avatarAtEnd="true"
+                app:labelAvatarPadding="8dp"
+                app:labelColor="@android:color/white"
+                app:avatarIcon="@drawable/avatar"
+                app:avatarHeight="10dp"
+                app:avatarWidth="10dp"
+                app:clickable="false"
                 app:backgroundColor="@android:color/holo_green_dark"
                 app:deletable="true"
                 app:deleteIconColor="@android:color/white" />

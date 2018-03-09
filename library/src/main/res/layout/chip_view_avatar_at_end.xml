@@ -14,6 +14,13 @@
         android:clickable="true"
         android:background="@drawable/bg_chip_view">
 
+        <!-- label -->
+        <TextView
+            android:id="@+id/label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"/>
+
         <!-- avatar -->
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/icon"
@@ -22,13 +29,6 @@
             android:src="@drawable/avatar"
             android:layout_gravity="center_vertical"
             android:visibility="gone"/>
-
-        <!-- label -->
-        <TextView
-            android:id="@+id/label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"/>
 
         <!-- remove button -->
         <ImageButton
